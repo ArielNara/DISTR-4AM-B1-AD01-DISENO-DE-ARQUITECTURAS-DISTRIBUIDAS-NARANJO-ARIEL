@@ -104,3 +104,9 @@ dotnet run --project src/Catalogo.Api/Catalogo.Api.csproj --launch-profile http
 dotnet run --project src/Inventario.Api/Inventario.Api.csproj --launch-profile http
 dotnet run --project src/Pedidos.Api/Pedidos.Api.csproj --launch-profile http
 ```
+
+## Pruebas con Postman
+
+Importa como **Collection** el archivo `postman/AD01 - Proyecto completo.postman_collection.json`. La colección incluye los endpoints CRUD y un flujo E2E para crear **Manzana Cordillera**, registrar stock y generar un pedido. No requiere importar un Environment.
+
+Para el flujo E2E, ejecuta las solicitudes numeradas de la carpeta `10 - Flujo E2E - Manzana Cordillera` en orden. Los servicios deben estar ejecutándose localmente en los puertos 5001, 5002 y 5003. Los POST guardan los identificadores generados en variables de la colección.

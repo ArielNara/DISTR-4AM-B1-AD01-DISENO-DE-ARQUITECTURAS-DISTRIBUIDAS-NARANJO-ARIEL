@@ -1,0 +1,577 @@
+{
+  "info": {
+    "name": "AD01 - Proyecto completo",
+    "description": "Colección Postman v2.1 para todos los endpoints de Catalogo.Api, Inventario.Api y Pedidos.Api, con ejemplos CRUD y flujo E2E de Manzana Cordillera. Los servicios deben estar levantados localmente en los puertos 5001, 5002 y 5003.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "catalogoUrl", "value": "http://localhost:5001", "type": "string" },
+    { "key": "inventarioUrl", "value": "http://localhost:5002", "type": "string" },
+    { "key": "pedidosUrl", "value": "http://localhost:5003", "type": "string" },
+    { "key": "categoriaCrudId", "value": "0", "type": "string" },
+    { "key": "marcaCrudId", "value": "0", "type": "string" },
+    { "key": "productoCrudId", "value": "0", "type": "string" },
+    { "key": "productoCrudSku", "value": "", "type": "string" },
+    { "key": "bodegaCrudId", "value": "0", "type": "string" },
+    { "key": "clienteCrudId", "value": "0", "type": "string" },
+    { "key": "productoId", "value": "1", "type": "string" },
+    { "key": "bodegaId", "value": "1", "type": "string" },
+    { "key": "clienteId", "value": "1", "type": "string" },
+    { "key": "pedidoId", "value": "0", "type": "string" },
+    { "key": "reservaId", "value": "0", "type": "string" },
+    { "key": "e2eCategoriaId", "value": "0", "type": "string" },
+    { "key": "e2eMarcaId", "value": "0", "type": "string" },
+    { "key": "e2eProductoId", "value": "0", "type": "string" },
+    { "key": "e2eSku", "value": "", "type": "string" },
+    { "key": "e2ePedidoId", "value": "0", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "01 - Catalogo.Api - Categorias",
+      "item": [
+        {
+          "name": "GET - Listar categorías",
+          "request": { "method": "GET", "header": [], "url": "{{catalogoUrl}}/api/categorias" }
+        },
+        {
+          "name": "GET - Obtener categoría por ID",
+          "request": { "method": "GET", "header": [], "url": "{{catalogoUrl}}/api/categorias/{{categoriaCrudId}}" },
+          "description": "Usa el ID guardado al ejecutar POST - Crear categoría."
+        },
+        {
+          "name": "POST - Crear categoría",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Categoría Postman {{$timestamp}}\",\n  \"descripcion\": \"Categoría de pruebas\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/categorias"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('categoriaCrudId', String(pm.response.json().idCategoria)); }",
+                "pm.test('Categoría creada o duplicada al repetir la solicitud', function () { pm.expect([201, 409]).to.include(pm.response.code); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Actualizar categoría",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Categoría Postman actualizada\",\n  \"descripcion\": \"Categoría actualizada desde Postman\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/categorias/{{categoriaCrudId}}"
+          }
+        },
+        {
+          "name": "DELETE - Eliminar categoría de prueba",
+          "request": { "method": "DELETE", "header": [], "url": "{{catalogoUrl}}/api/categorias/{{categoriaCrudId}}" },
+          "description": "Solo elimina si no tiene productos asociados. Ejecuta primero POST - Crear categoría."
+        }
+      ]
+    },
+    {
+      "name": "02 - Catalogo.Api - Marcas",
+      "item": [
+        {
+          "name": "GET - Listar marcas",
+          "request": { "method": "GET", "header": [], "url": "{{catalogoUrl}}/api/marcas" }
+        },
+        {
+          "name": "GET - Obtener marca por ID",
+          "request": { "method": "GET", "header": [], "url": "{{catalogoUrl}}/api/marcas/{{marcaCrudId}}" },
+          "description": "Usa el ID guardado al ejecutar POST - Crear marca."
+        },
+        {
+          "name": "POST - Crear marca",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Marca Postman {{$timestamp}}\",\n  \"paisOrigen\": \"Ecuador\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/marcas"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('marcaCrudId', String(pm.response.json().idMarca)); }",
+                "pm.test('Marca creada o duplicada al repetir la solicitud', function () { pm.expect([201, 409]).to.include(pm.response.code); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Actualizar marca",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Marca Postman actualizada\",\n  \"paisOrigen\": \"Ecuador\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/marcas/{{marcaCrudId}}"
+          }
+        },
+        {
+          "name": "DELETE - Eliminar marca de prueba",
+          "request": { "method": "DELETE", "header": [], "url": "{{catalogoUrl}}/api/marcas/{{marcaCrudId}}" },
+          "description": "Solo elimina si no tiene productos asociados. Ejecuta primero POST - Crear marca."
+        }
+      ]
+    },
+    {
+      "name": "03 - Catalogo.Api - Productos",
+      "item": [
+        {
+          "name": "GET - Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{catalogoUrl}}/api/productos?pagina=1&tamanoPagina=10&estado=ACTIVO"
+          }
+        },
+        {
+          "name": "GET - Obtener producto por ID",
+          "request": { "method": "GET", "header": [], "url": "{{catalogoUrl}}/api/productos/{{productoCrudId}}" },
+          "description": "Usa el ID guardado al ejecutar POST - Crear producto."
+        },
+        {
+          "name": "GET - Buscar producto por SKU",
+          "request": { "method": "GET", "header": [], "url": "{{catalogoUrl}}/api/productos/sku/{{productoCrudSku}}" },
+          "description": "Usa el SKU guardado al ejecutar POST - Crear producto."
+        },
+        {
+          "name": "POST - Crear producto de prueba",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCategoria\": 1,\n  \"idMarca\": 1,\n  \"nombre\": \"Producto Postman {{$timestamp}}\",\n  \"sku\": \"POSTMAN-{{$timestamp}}\",\n  \"precio\": 10.50,\n  \"estado\": \"ACTIVO\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/productos"
+          },
+          "description": "La categoría 1 y marca 1 son datos semilla del proyecto. El SKU usa timestamp para evitar duplicados.",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { var p = pm.response.json(); pm.collectionVariables.set('productoCrudId', String(p.idProducto)); pm.collectionVariables.set('productoCrudSku', p.sku); }",
+                "pm.test('Producto creado', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Actualizar producto de prueba",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCategoria\": 1,\n  \"idMarca\": 1,\n  \"nombre\": \"Producto Postman actualizado\",\n  \"sku\": \"{{productoCrudSku}}\",\n  \"precio\": 12.75,\n  \"estado\": \"ACTIVO\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/productos/{{productoCrudId}}"
+          },
+          "description": "Ejecuta POST - Crear producto primero."
+        },
+        {
+          "name": "DELETE - Dar de baja producto de prueba",
+          "request": { "method": "DELETE", "header": [], "url": "{{catalogoUrl}}/api/productos/{{productoCrudId}}" },
+          "description": "Este endpoint realiza baja lógica y cambia el estado a INACTIVO; no borra físicamente. Ejecuta al final."
+        }
+      ]
+    },
+    {
+      "name": "04 - Inventario.Api - Bodegas",
+      "item": [
+        {
+          "name": "GET - Listar bodegas",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/bodegas" }
+        },
+        {
+          "name": "GET - Obtener bodega por ID",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/bodegas/{{bodegaCrudId}}" },
+          "description": "Usa el ID guardado al ejecutar POST - Crear bodega."
+        },
+        {
+          "name": "POST - Crear bodega de prueba",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Bodega Postman {{$timestamp}}\",\n  \"ciudad\": \"Quito\",\n  \"direccion\": \"Av. Pruebas 123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{inventarioUrl}}/api/bodegas"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('bodegaCrudId', String(pm.response.json().idBodega)); }",
+                "pm.test('Bodega creada', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Actualizar bodega de prueba",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Bodega Postman actualizada\",\n  \"ciudad\": \"Quito\",\n  \"direccion\": \"Av. Pruebas 456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{inventarioUrl}}/api/bodegas/{{bodegaCrudId}}"
+          },
+          "description": "Ejecuta POST - Crear bodega primero."
+        },
+        {
+          "name": "DELETE - Eliminar bodega de prueba",
+          "request": { "method": "DELETE", "header": [], "url": "{{inventarioUrl}}/api/bodegas/{{bodegaCrudId}}" },
+          "description": "Solo se puede eliminar si no tiene existencias, movimientos ni reservas asociadas. Ejecuta primero POST - Crear bodega."
+        }
+      ]
+    },
+    {
+      "name": "05 - Inventario.Api - Existencias",
+      "item": [
+        {
+          "name": "GET - Listar existencias",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/existencias?idProducto={{productoId}}&idBodega={{bodegaId}}" }
+        },
+        {
+          "name": "GET - Resumen de existencias por producto",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/existencias/producto/{{productoId}}" },
+          "description": "Valida el producto mediante Catalogo.Api."
+        },
+        {
+          "name": "PUT - Ajustar stock",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{productoId}},\n  \"idBodega\": {{bodegaId}},\n  \"nuevoStock\": 20,\n  \"motivo\": \"Ajuste de existencias desde Postman\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{inventarioUrl}}/api/existencias/ajuste"
+          },
+          "description": "Cambia el stock físico al valor indicado. Para probar sin tocar un producto semilla, primero crea un producto y configura productoId con su ID."
+        }
+      ]
+    },
+    {
+      "name": "06 - Inventario.Api - Movimientos",
+      "item": [
+        {
+          "name": "GET - Listar movimientos",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/movimientos?idProducto={{productoId}}&idBodega={{bodegaId}}" }
+        },
+        {
+          "name": "POST - Registrar entrada",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{productoId}},\n  \"idBodega\": {{bodegaId}},\n  \"tipo\": \"ENTRADA\",\n  \"cantidad\": 5,\n  \"observaciones\": \"Ingreso de prueba desde Postman\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{inventarioUrl}}/api/movimientos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Inventario.Api - Reservas",
+      "item": [
+        {
+          "name": "GET - Listar reservas",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/reservas?idProducto={{productoId}}&idBodega={{bodegaId}}" }
+        },
+        {
+          "name": "GET - Obtener reserva por ID",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/reservas/{{reservaId}}" }
+        },
+        {
+          "name": "POST - Crear reserva",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{productoId}},\n  \"idBodega\": {{bodegaId}},\n  \"cantidad\": 1,\n  \"referenciaExterna\": \"POSTMAN-{{$timestamp}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{inventarioUrl}}/api/reservas"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('reservaId', String(pm.response.json().idReserva)); }",
+                "pm.test('Reserva creada', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Confirmar reserva",
+          "request": { "method": "PUT", "header": [], "url": "{{inventarioUrl}}/api/reservas/{{reservaId}}/confirmar" },
+          "description": "Ejecuta después de POST - Crear reserva. Confirma la reserva y descuenta stock. No ejecutes también Cancelar sobre la misma reserva."
+        },
+        {
+          "name": "PUT - Cancelar reserva",
+          "request": { "method": "PUT", "header": [], "url": "{{inventarioUrl}}/api/reservas/{{reservaId}}/cancelar" },
+          "description": "Ejecuta después de POST - Crear reserva. Cancela la reserva activa. No ejecutes también Confirmar sobre la misma reserva."
+        }
+      ]
+    },
+    {
+      "name": "08 - Pedidos.Api - Clientes",
+      "item": [
+        {
+          "name": "GET - Listar clientes",
+          "request": { "method": "GET", "header": [], "url": "{{pedidosUrl}}/api/clientes" }
+        },
+        {
+          "name": "GET - Obtener cliente por ID",
+          "request": { "method": "GET", "header": [], "url": "{{pedidosUrl}}/api/clientes/{{clienteCrudId}}" },
+          "description": "Usa el ID guardado al ejecutar POST - Crear cliente."
+        },
+        {
+          "name": "POST - Crear cliente de prueba",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Cliente Postman\",\n  \"cedula\": \"0923456784\",\n  \"correo\": \"cliente.postman.{{$timestamp}}@correo.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{pedidosUrl}}/api/clientes"
+          },
+          "description": "La cédula de ejemplo debe ser válida con el algoritmo módulo 10; el correo incluye timestamp para evitar duplicados.",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('clienteCrudId', String(pm.response.json().idCliente)); }",
+                "pm.test('Cliente creado', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Actualizar cliente de prueba",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Cliente Postman Actualizado\",\n  \"cedula\": \"0923456784\",\n  \"correo\": \"cliente.postman.actualizado@correo.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{pedidosUrl}}/api/clientes/{{clienteCrudId}}"
+          },
+          "description": "Ejecuta POST - Crear cliente primero."
+        },
+        {
+          "name": "DELETE - Eliminar cliente de prueba",
+          "request": { "method": "DELETE", "header": [], "url": "{{pedidosUrl}}/api/clientes/{{clienteCrudId}}" },
+          "description": "Solo elimina si no tiene pedidos asociados. Ejecuta primero POST - Crear cliente."
+        }
+      ]
+    },
+    {
+      "name": "09 - Pedidos.Api - Pedidos",
+      "item": [
+        {
+          "name": "GET - Listar pedidos",
+          "request": { "method": "GET", "header": [], "url": "{{pedidosUrl}}/api/pedidos?idCliente={{clienteId}}" }
+        },
+        {
+          "name": "GET - Obtener pedido por ID",
+          "request": { "method": "GET", "header": [], "url": "{{pedidosUrl}}/api/pedidos/{{pedidoId}}" },
+          "description": "Usa el ID guardado al ejecutar POST - Crear pedido."
+        },
+        {
+          "name": "POST - Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": {{clienteId}},\n  \"detalles\": [\n    {\n      \"idProducto\": {{productoId}},\n      \"idBodega\": {{bodegaId}},\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{pedidosUrl}}/api/pedidos"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('pedidoId', String(pm.response.json().idPedido)); }",
+                "pm.test('Pedido creado y confirmado', function () { pm.response.to.have.status(201); pm.expect(pm.response.json().estado).to.eql('CONFIRMADO'); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "PUT - Cancelar pedido",
+          "request": { "method": "PUT", "header": [], "url": "{{pedidosUrl}}/api/pedidos/{{pedidoId}}/cancelar" },
+          "description": "En el código actual puede responder 409 cuando las reservas ya están CONFIRMADAS, porque Inventario.Api solo permite cancelar reservas ACTIVA."
+        }
+      ]
+    },
+    {
+      "name": "10 - Flujo E2E - Manzana Cordillera",
+      "description": "Ejecuta en orden: crear categoría, crear marca, crear producto, registrar stock y crear pedido. Cada POST guarda automáticamente el ID en variables de la colección.",
+      "item": [
+        {
+          "name": "1 - Crear categoría Frutas",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Frutas Postman {{$timestamp}}\",\n  \"descripcion\": \"Frutas frescas\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/categorias"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('e2eCategoriaId', String(pm.response.json().idCategoria)); }",
+                "pm.test('Categoría E2E creada', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "2 - Crear marca Cordillera",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cordillera {{$timestamp}}\",\n  \"paisOrigen\": \"Ecuador\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/marcas"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('e2eMarcaId', String(pm.response.json().idMarca)); }",
+                "pm.test('Marca E2E creada', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "3 - Crear producto Manzana Cordillera",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCategoria\": {{e2eCategoriaId}},\n  \"idMarca\": {{e2eMarcaId}},\n  \"nombre\": \"Manzana Cordillera\",\n  \"sku\": \"MANZANA-CORDILLERA-{{$timestamp}}\",\n  \"precio\": 1.25,\n  \"estado\": \"ACTIVO\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{catalogoUrl}}/api/productos"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { var p = pm.response.json(); pm.collectionVariables.set('e2eProductoId', String(p.idProducto)); pm.collectionVariables.set('e2eSku', p.sku); }",
+                "pm.test('Producto Manzana Cordillera creado', function () { pm.response.to.have.status(201); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "4 - Registrar 20 unidades en bodega 1",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": {{e2eProductoId}},\n  \"idBodega\": 1,\n  \"nuevoStock\": 20,\n  \"motivo\": \"Stock inicial Manzana Cordillera\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{inventarioUrl}}/api/existencias/ajuste"
+          }
+        },
+        {
+          "name": "5 - Crear pedido por 2 manzanas (cliente 1)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"detalles\": [\n    {\n      \"idProducto\": {{e2eProductoId}},\n      \"idBodega\": 1,\n      \"cantidad\": 2\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{pedidosUrl}}/api/pedidos"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "if (pm.response.code === 201) { pm.collectionVariables.set('e2ePedidoId', String(pm.response.json().idPedido)); }",
+                "pm.test('Pedido E2E confirmado por $2.50', function () { pm.response.to.have.status(201); var p = pm.response.json(); pm.expect(p.estado).to.eql('CONFIRMADO'); pm.expect(p.total).to.eql(2.5); });"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "6 - Consultar pedido E2E",
+          "request": { "method": "GET", "header": [], "url": "{{pedidosUrl}}/api/pedidos/{{e2ePedidoId}}" }
+        },
+        {
+          "name": "7 - Verificar existencias finales",
+          "request": { "method": "GET", "header": [], "url": "{{inventarioUrl}}/api/existencias/producto/{{e2eProductoId}}" },
+          "description": "Después del pedido, el stock físico esperado en bodega 1 es 18 unidades."
+        }
+      ]
+    }
+  ]
+}
