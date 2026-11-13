@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "AD01 - Comercio Multibodega",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección de pruebas para Catalogo, Inventario y Pedidos"
+  },
+  "item": [
+    {
+      "name": "Catalogo.Api",
+      "item": [
+        {
+          "name": "GET /api/categorias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{catalogoUrl}}/api/categorias", "host": ["{{catalogoUrl}}"], "path": ["api", "categorias"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/categorias",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nombre\": \"Accesorios\",\n  \"Descripcion\": \"Categoría de prueba\"\n}"
+            },
+            "url": { "raw": "{{catalogoUrl}}/api/categorias", "host": ["{{catalogoUrl}}"], "path": ["api", "categorias"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 o 409\", function () { pm.expect([201, 409]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inventario.Api",
+      "item": [
+        {
+          "name": "GET /api/bodegas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{inventarioUrl}}/api/bodegas", "host": ["{{inventarioUrl}}"], "path": ["api", "bodegas"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/reservas",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"IdProducto\": 1,\n  \"IdBodega\": 1,\n  \"Cantidad\": 2,\n  \"ReferenciaExterna\": \"PM-RES-001\"\n}"
+            },
+            "url": { "raw": "{{inventarioUrl}}/api/reservas", "host": ["{{inventarioUrl}}"], "path": ["api", "reservas"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 o 409\", function () { pm.expect([201, 409]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pedidos.Api",
+      "item": [
+        {
+          "name": "GET /api/clientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{pedidosUrl}}/api/clientes", "host": ["{{pedidosUrl}}"], "path": ["api", "clientes"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/clientes",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nombres\": \"Cliente Prueba\",\n  \"Cedula\": \"0900000019\",\n  \"Correo\": \"cliente.prueba@correo.com\"\n}"
+            },
+            "url": { "raw": "{{pedidosUrl}}/api/clientes", "host": ["{{pedidosUrl}}"], "path": ["api", "clientes"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 o 409\", function () { pm.expect([201, 409]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/pedidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"IdCliente\": 1,\n  \"Detalles\": [\n    {\n      \"IdProducto\": 1,\n      \"IdBodega\": 1,\n      \"Cantidad\": 1\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{pedidosUrl}}/api/pedidos", "host": ["{{pedidosUrl}}"], "path": ["api", "pedidos"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 o 409 o 503\", function () { pm.expect([201, 409, 503]).to.include(pm.response.code); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Flujo E2E",
+      "item": [
+        {
+          "name": "Crear cliente + pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"IdCliente\": 1,\n  \"Detalles\": [\n    {\n      \"IdProducto\": 2,\n      \"IdBodega\": 1,\n      \"Cantidad\": 1\n    },\n    {\n      \"IdProducto\": 3,\n      \"IdBodega\": 2,\n      \"Cantidad\": 2\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{pedidosUrl}}/api/pedidos", "host": ["{{pedidosUrl}}"], "path": ["api", "pedidos"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -52,7 +52,7 @@ public class ExceptionHandlingMiddleware
                 context.Response.StatusCode = (int)HttpStatusCode.Conflict;
                 problemDetails.Status = (int)HttpStatusCode.Conflict;
                 problemDetails.Title = "Conflicto de concurrencia o integridad de datos";
-                
+
                 if (dbEx.InnerException is SqlException sqlEx)
                 {
                     if (sqlEx.Number == 547) // Foreign Key constraint violation

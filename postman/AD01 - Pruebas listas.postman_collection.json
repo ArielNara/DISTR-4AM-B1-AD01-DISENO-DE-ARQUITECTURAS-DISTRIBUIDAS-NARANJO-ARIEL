@@ -1,0 +1,415 @@
+{
+  "info": {
+    "name": "AD01 - Pruebas listas",
+    "description": "Colección autocontenida para probar Catalogo.Api, Inventario.Api y Pedidos.Api. No requiere importar un Environment. Ejecuta las solicitudes de Pedidos en orden: crear pedido y luego consultar detalle.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "catalogoUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "inventarioUrl",
+      "value": "http://localhost:5002",
+      "type": "string"
+    },
+    {
+      "key": "pedidosUrl",
+      "value": "http://localhost:5003",
+      "type": "string"
+    },
+    {
+      "key": "pedidoId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Catalogo.Api",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{catalogoUrl}}/api/productos",
+              "host": [
+                "{{catalogoUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Catalogo responde HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar producto semilla (ID 1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{catalogoUrl}}/api/productos/1",
+              "host": [
+                "{{catalogoUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Producto encontrado\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().idProducto).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Inventario.Api",
+      "item": [
+        {
+          "name": "Listar bodegas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{inventarioUrl}}/api/bodegas",
+              "host": [
+                "{{inventarioUrl}}"
+              ],
+              "path": [
+                "api",
+                "bodegas"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inventario responde HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar existencias del producto semilla (ID 1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{inventarioUrl}}/api/existencias/producto/1",
+              "host": [
+                "{{inventarioUrl}}"
+              ],
+              "path": [
+                "api",
+                "existencias",
+                "producto",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Existencias consultadas correctamente\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().idProducto).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Pedidos.Api",
+      "item": [
+        {
+          "name": "Listar clientes semilla",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pedidosUrl}}/api/clientes",
+              "host": [
+                "{{pedidosUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Clientes consultados correctamente\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear pedido válido (cliente 1, producto 1, bodega 1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"detalles\": [\n    {\n      \"idProducto\": 1,\n      \"idBodega\": 1,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{pedidosUrl}}/api/pedidos",
+              "host": [
+                "{{pedidosUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "Pedido E2E. Valida cliente y producto, reserva stock, persiste el pedido y confirma la reserva. Si responde 201, guarda el ID para la solicitud de consulta de detalle."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Pedido creado y confirmado (HTTP 201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var pedido = pm.response.json();",
+                  "    pm.expect(pedido.estado).to.eql(\"CONFIRMADO\");",
+                  "    pm.expect(pedido.idPedido).to.be.a(\"number\");",
+                  "    pm.collectionVariables.set(\"pedidoId\", String(pedido.idPedido));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar detalle del último pedido creado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pedidosUrl}}/api/pedidos/{{pedidoId}}",
+              "host": [
+                "{{pedidosUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": "Ejecuta después de «Crear pedido válido». El ID se guarda automáticamente en una variable de la colección."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Detalle del pedido encontrado\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().idPedido).to.eql(Number(pm.collectionVariables.get(\"pedidoId\")));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar stock insuficiente (espera HTTP 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"detalles\": [\n    {\n      \"idProducto\": 1,\n      \"idBodega\": 1,\n      \"cantidad\": 999999\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{pedidosUrl}}/api/pedidos",
+              "host": [
+                "{{pedidosUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Stock insuficiente devuelve HTTP 409\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar cliente inexistente (espera HTTP 404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 999999,\n  \"detalles\": [\n    {\n      \"idProducto\": 1,\n      \"idBodega\": 1,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{pedidosUrl}}/api/pedidos",
+              "host": [
+                "{{pedidosUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Cliente inexistente devuelve HTTP 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar producto inexistente (espera HTTP 404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"detalles\": [\n    {\n      \"idProducto\": 999999,\n      \"idBodega\": 1,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{pedidosUrl}}/api/pedidos",
+              "host": [
+                "{{pedidosUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Producto inexistente devuelve HTTP 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

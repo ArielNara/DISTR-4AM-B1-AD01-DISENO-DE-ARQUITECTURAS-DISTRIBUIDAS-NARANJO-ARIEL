@@ -37,3 +37,15 @@ bld/
 ## OS files
 .DS_Store
 Thumbs.db
+
+## .NET build and test output
+TestResults/
+artifacts/
+*.snupkg
+
+## Local environment and secrets
+.env
+.env.*
+!.env.example
+**/appsettings.*.local.json
+**/secrets*.json
